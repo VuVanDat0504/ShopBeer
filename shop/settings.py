@@ -81,20 +81,29 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+# https://docs.djangoprojecpip install mysqlclientpip install mysqlclientt.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "cnpm",
+#         "USER": "postgres",
+#         "PASSWORD": "datvu",
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#         "ATOMIC_REQUESTS": True,
+#     }
+# }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "cnpm",
-        "USER": "postgres",
-        "PASSWORD": "datvu",
-        "HOST": "localhost",
-        "PORT": "5432",
-        "ATOMIC_REQUESTS": True,
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'shopbeer',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '3307',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
