@@ -11,6 +11,7 @@ class Beer(models.Model):
     name = models.CharField(max_length=256)
     category = models.CharField(max_length=256)
     picture = models.ImageField(upload_to=beer_directory_path, null=True)
+    price = models.FloatField()
     class Meta:
         db_table = 'product_beer'
 

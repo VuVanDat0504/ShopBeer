@@ -41,10 +41,11 @@ class GetMyUserSerializer(serializers.ModelSerializer):
     email = serializers.ReadOnlyField(source='user.email')
     first_name = serializers.ReadOnlyField(source='user.first_name')
     last_name = serializers.ReadOnlyField(source='user.last_name')
+    is_superuser = serializers.ReadOnlyField(source='user.is_superuser')
 
     class Meta:
         model = MyUser
-        fields = ('id', 'username', 'email', 'first_name', 'last_name','gender','age')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name','gender','age','is_superuser')
 
 
 
