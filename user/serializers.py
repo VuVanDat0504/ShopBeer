@@ -41,10 +41,11 @@ class GetMyUserSerializer(serializers.ModelSerializer):
     email = serializers.ReadOnlyField(source='user.email')
     first_name = serializers.ReadOnlyField(source='user.first_name')
     last_name = serializers.ReadOnlyField(source='user.last_name')
+    is_superuser = serializers.ReadOnlyField(source='user.is_superuser')
 
     class Meta:
         model = MyUser
-        fields = ('id', 'username', 'email', 'first_name', 'last_name','gender','age')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name','gender','age','is_superuser')
 
 
 
@@ -53,6 +54,8 @@ class TokenSerializer(TokenObtainPairSerializer):
         # print('attrs self: ', attrs[self.username_field])
         data =  super(TokenSerializer, self).validate(attrs)
         data.update({'is_superuser': self.user.is_superuser})
+        data.update({'username': self.user.username })
+
         return data
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:

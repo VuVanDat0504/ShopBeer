@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from product.models import Beer,Order
+from product.models import Product,Order
 
-class BeerSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     picture = serializers.ImageField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta:
-        model = Beer
+        model = Product
         fields ='__all__'
   
 class OrderSerializer(serializers.ModelSerializer):

@@ -14,6 +14,15 @@ from django.contrib.auth.models import Permission
 from django.http import Http404
 from rest_framework import generics
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = TokenSerializer
+
+
+class UserProfile(APIView):
+    def get(self,request):
+        user = MyUser.objects.get(user_id = request.user.id)
+        userSerializer = GetMyUserSerializer(user)
+        return Response(userSerializer.data)
 
 class MyUsers(APIView):
     def get(self,request):
@@ -41,7 +50,7 @@ class UserDetail(APIView):
    
     def get_object(self, pk):
         try:
-            return MyUser.objects.get(pk=pk)
+            return MyUser.objects.get(user_id=pk)
         except MyUser.DoesNotExist:
             raise Http404
 
@@ -72,10 +81,10 @@ class UserDetail(APIView):
         except Exception as err:
             return Response(err.args, status=status.HTTP_400_BAD_REQUEST)
 
-        def delete(self, request, pk, format=None):
-            user = self.get_object(pk)
-            user.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, pk, format=None):
+        user = MyUser.objects.get(user_id = pk)
+        user.delete()
+        return Response('succesful',status=status.HTTP_204_NO_CONTENT)
 
 class ChangePassword(APIView):
     def post(self,request):
