@@ -54,6 +54,8 @@ class TokenSerializer(TokenObtainPairSerializer):
         # print('attrs self: ', attrs[self.username_field])
         data =  super(TokenSerializer, self).validate(attrs)
         data.update({'is_superuser': self.user.is_superuser})
+        data.update({'username': self.user.username })
+
         return data
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
