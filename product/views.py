@@ -60,7 +60,7 @@ class OrderList(APIView):
             return Response(serializer.data)
     def post(self, request):
         # try:
-            count_order  = Order.objects.all()
+            count_order  = Order.objects.all().distinct('iteam_code').count() + 1
             for data in request.data:
                 product_input = data.get('product')
                 user = request.user
@@ -73,7 +73,7 @@ class OrderList(APIView):
                     product_id = product,
                     money = money, 
                     number = number,
-                    iteam_code = len(count_order)+1,
+                    iteam_code = '10' + str(count_order).zfill(4),
                 )
                 order.save()
             return Response("successful", status=status.HTTP_201_CREATED)
@@ -124,12 +124,14 @@ class Apriori(APIView):
                 items.append(order.product.category_id)
             transactions.append(items)
         results = list(apriori(transactions))
-        array1 = []
-        array2 = []
-        array3 = []
+        print(transactions)
+        
+        print(results)
         category = Category.objects.all()
         result=[]
         input = request.data.get('product')
+        input.sort()
+        print(input)
         for RelationRecord in results:
             t3 = {}
             for ordered_stat in RelationRecord.ordered_statistics:
@@ -141,66 +143,6 @@ class Apriori(APIView):
                 else:
                     return Response(None)
         print(result)
-                # Support.append(RelationRecord.support)
-                # Items.append(RelationRecord.items)
-                # Antecedent.append(ordered_stat.items_base)
-                # Consequent.append(ordered_stat.items_add)
-                # Confidence.append(ordered_stat.confidence)
-                # Lift.append(ordered_stat.lift)
-        #         if len(RelationRecord.items)==2:
-        #             if len(ordered_stat.items_base)==1:
-        #                 x = list(ordered_stat.items_base)
-                        
-        #                 a['items'] = list(RelationRecord.items)
-        #                 a['items_base'] = x
-        #                 a['items_add'] = list(ordered_stat.items_add)
-        #                 a['confidence'] = ordered_stat.confidence
-        #                 a['lift'] = ordered_stat.lift
-        #                 a['support'] = RelationRecord.support
-        #                 array1.append(a)
-        #         if len(RelationRecord.items)==3:
-        #             if len(ordered_stat.items_base)==1:
-        #                 c['items'] = list(RelationRecord.items)
-        #                 x = list(ordered_stat.items_base)
-        #                 c['items_base'] = x
-        #                 c['items_add'] = list(ordered_stat.items_add)
-        #                 c['confidence'] = ordered_stat.confidence
-        #                 c['lift'] = ordered_stat.lift
-        #                 c['support'] = RelationRecord.support
-        #                 array2.append(c)
-        #             if len(ordered_stat.items_base)==2:
-                    
-        #                 b['items'] = list(RelationRecord.items)
-        #                 b['items_base'] =list(ordered_stat.items_base)
-        #                 b['items_add'] = list(ordered_stat.items_add)
-        #                 b['confidence'] = ordered_stat.confidence
-        #                 b['lift'] = ordered_stat.lift
-        #                 b['support'] = RelationRecord.support
-        #                 array3.append(b)
-
-        # result=[]
-        # input = [3,1]
-        # print(array3)
-        # for a in array1:
-        #     t1 = {}
-        #     if a.get('items_base') == input:
-        #         t1['items_add'] = a.get('items_add')
-        #         t1['confidence'] = a.get('confidence')
-        #         result.append(t1)
-        # for b in array2: 
-        #     t2 = {}
-        #     if b.get('items_base') == input:
-        #         t2['items_add'] = b.get('items_add')
-        #         t2['confidence'] = b.get('confidence')
-        #         result.append(t2)
-            
-        # for c in array3:
-        #     t3 = {}
-        #     if c.get('items_base') == input or c.get('items_base') == [1,3]:
-        #         t3['items_add'] = c.get('items_add')
-        #         t3['confidence'] = c.get('confidence')
-        #         result.append(t3)
-        # print(result)
         index = 0
         if len(result)>0:
             check = result[0].get('confidence')
@@ -208,9 +150,9 @@ class Apriori(APIView):
                 if check < y.get('confidence'):
                     check = y.get('confidence')
                     index = i
+            # ??loi
             kq  = result[index].get('items_add')
             print(kq)
-
             product = Product.objects.filter(category_id__in = kq)
             productSerializer = ProductSerializer(product,many=True,context={'request': request})
 
