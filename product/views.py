@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from product.models import Product,Order,Category
-from product.serializers import ProductSerializer,OrderSerializer
+from product.serializers import ProductSerializer,OrderSerializer,CategorySerializer
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
@@ -9,10 +9,20 @@ from apyori import apriori
 from pandas import DataFrame    
 
 
+class CategoryList(APIView):
+    def get(self,request):
+        queryset =  Category.objects.all()
+        category = CategorySerializer(queryset,many= True)
+        return Response(category.data)
+
 
 class ProductList(APIView):
     def get(self,request):
-            product = Product.objects.all()
+            category_id =request.GET.get('category_id')
+            if category_id is not None:
+                product = Product.objects.filter(category_id = category_id)
+            else:
+                product = Product.objects.filter()
             serializer = ProductSerializer(product,many=True,context={'request': request})
             return Response(serializer.data)
     def post(self, request):
@@ -155,6 +165,32 @@ class Apriori(APIView):
             print(kq)
             product = Product.objects.filter(category_id__in = kq)
             productSerializer = ProductSerializer(product,many=True,context={'request': request})
+        #print 
+        df = DataFrame(columns=('Items','Antecedent','Consequent','Support','Confidence','Lift'))
+
+        Support =[]
+        Confidence = []
+        Lift = []
+        Items = []
+        Antecedent = []
+        Consequent=[]
+
+        for RelationRecord in results:
+            for ordered_stat in RelationRecord.ordered_statistics:
+                Support.append(RelationRecord.support)
+                Items.append(RelationRecord.items)
+                Antecedent.append(ordered_stat.items_base)
+                Consequent.append(ordered_stat.items_add)
+                Confidence.append(ordered_stat.confidence)
+                Lift.append(ordered_stat.lift)
+
+        df['Items'] = list(map(set, Items))                                   
+        df['Antecedent'] = list(map(set, Antecedent))
+        df['Consequent'] = list(map(set, Consequent))
+        df['Support'] = Support
+        df['Confidence'] = Confidence
+        df['Lift']= Lift
+        print(df)
 
         return Response(productSerializer.data)
         
