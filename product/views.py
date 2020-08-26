@@ -136,7 +136,7 @@ class Apriori(APIView):
         results = list(apriori(transactions))
         print(transactions)
         
-        print(results)
+        # print(results)
         category = Category.objects.all()
         result=[]
         input = request.data.get('product')
