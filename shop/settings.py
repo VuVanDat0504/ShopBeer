@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+# https://docs.djangoprojecpip install mysqlclientpip install mysqlclientt.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
